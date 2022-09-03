@@ -28,27 +28,30 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
   /**************************************************************************** */
 
-  app.get("/filteredimage", async (req, res) => {
-    try {
-      let { image_url } = req.query;
-      if (!image_url) {
-        return res.status(400).send("bad request!");
+  app.get(
+    "/filteredimage",
+    async (req: express.Request, res: express.Response) => {
+      try {
+        let image_url: string = req.query.image_url;
+        if (!image_url) {
+          return res.status(400).send("bad request!");
+        }
+        const path: string = await filterImageFromURL(image_url);
+        res.sendFile(path);
+        res.on("finish", () => deleteLocalFiles([path]));
+      } catch {
+        return res
+          .status(500)
+          .send({ error: "Unable to process your request" });
       }
-      console.log(image_url);
-      const path = await filterImageFromURL(image_url);
-      console.log(path);
-      res.sendFile(path);
-      res.on("finish", () => deleteLocalFiles([path]));
-    } catch {
-      return res.status(500).send({ error: "Unable to process your request" });
     }
-  });
+  );
 
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
-  } );
+  app.get("/", async (req: express.Request, res: express.Response) => {
+    res.send("try GET /filteredimage?image_url={{}}");
+  });
 
   // Start the Server
   app.listen(port, () => {
