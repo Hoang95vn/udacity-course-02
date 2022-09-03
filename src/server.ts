@@ -28,10 +28,6 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
   /**************************************************************************** */
 
-  //! END @TODO1
-
-  // Root Endpoint
-  // Displays a simple message to the user
   app.get("/filteredimage", async (req, res) => {
     try {
       let { image_url } = req.query;
@@ -47,6 +43,12 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
       return res.status(500).send({ error: "Unable to process your request" });
     }
   });
+
+  // Root Endpoint
+  // Displays a simple message to the user
+  app.get( "/", async ( req, res ) => {
+    res.send("try GET /filteredimage?image_url={{}}")
+  } );
 
   // Start the Server
   app.listen(port, () => {
